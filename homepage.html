@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>News Page</title>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+    }
+    header {
+        background: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 50;
+    }
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: auto;
+        padding: 15px 0;
+    }
+    .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .search-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .search-box input {
+        padding: 6px 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        outline: none;
+    }
+
+    nav {
+        position: relative;
+    }
+    .menu-toggle {
+        display: none;
+        font-size: 28px;
+        cursor: pointer;
+        user-select: none;
+    }
+    nav ul {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        padding: 10px 0;
+        font-weight: bold;
+        font-size: 14px;
+        transition: 0.3s;
+    }
+    nav a {
+        text-decoration: none;
+        color: black;
+        padding: 8px 12px;
+        border-radius: 4px;
+    }
+    header a:hover {
+        background: #4b0082;
+        color: white;
+    }
+    .highlight {
+        color: orange;
+    }
+    .main-container {
+        margin-top: 2rem;
+        padding: 0 2.5rem;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Main News */
+    .main-news {
+        display: flex;
+        gap: 1rem;
+        height: 500px;
+        margin-top: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .main-left, .main-right {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.75rem;
+    }
+
+    .main-left {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-right {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .small-news {
+        position: relative;
+        border-radius: 0.75rem;
+        overflow: hidden;
+    }
+
+    .news-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .news-image:hover {
+        transform: scale(1.05);
+    }
+
+    .overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(to top, #0f172a, transparent);
+        opacity: 0.8;
+        z-index: 1;
+        border-radius: 0.75rem;
+    }
+
+    .content {
+        position: absolute;
+        bottom: 0;
+        padding: 1rem;
+        z-index: 2;
+        color: white;
+    }
+
+    .content h2 {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .content h3 {
+        font-size: 1rem;
+        font-weight: bold;
+    }
+
+    .content span {
+        color: #facc15;
+        font-weight: bold;
+        font-size: 0.875rem;
+    }
+
+    /* Latest & Most Popular */
+    .latest-popular {
+        display: flex;
+        gap: 2rem;
+        margin-top: 2.5rem;
+    }
+
+    .latest, .popular {
+        flex: 1;
+    }
+
+    .underline {
+        width: 3rem;
+        height: 4px;
+        background-color: #172554;
+        margin-bottom: 1rem;
+    }
+
+    .latest-list, .popular-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .latest-item, .popular-item {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .latest-item img, .popular-item img {
+        width: 5rem;
+        height: 5rem;
+        object-fit: cover;
+        border-radius: 0.5rem;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .latest-item img:hover, .popular-item img:hover {
+        transform: scale(1.05);
+    }
+
+    .latest-item h3, .popular-item h3 {
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+
+    .latest-item h3:hover, .popular-item h3:hover {
+        color: #2563eb;
+    }
+
+    .latest-item p, .popular-item p {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .popular-item span {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #d1d5db;
+    }
+
+    /* Corporate News */
+    .corporate-news {
+        margin-top: 5rem;
+    }
+
+    .corporate-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+
+    .corporate-item {
+        flex: 1 1 250px;
+        max-width: 350px;
+    }
+
+    .corporate-item img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .corporate-item img:hover {
+        transform: scale(1.05);
+    }
+
+    .corporate-item h3 {
+        font-weight: bold;
+        margin-top: 0.5rem;
+        }
+
+    /* Load More */
+    .load-more {
+        margin-top: 5rem;
+        display: flex;
+        justify-content: center;
+    }
+
+    .load-more-button {
+        width: 20rem;
+        height: 3rem;
+        background-color: #1e3a8a;
+        border-radius: 0.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .load-more-button h3 {
+        color: white;
+        font-weight: bold;
+    }
+
+    /* Anchor text hover effect */
+    a {
+        text-decoration: none;
+        color: inherit;
+        transition: color 0.3s ease;
+    }
+
+    a:hover {
+        color: #2563eb;
+    }
+    footer {
+        background: #eee;
+        margin-top: 50px;
+        padding: 30px 0 10px;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+    }
+    footer nav a {
+        margin: 0 10px;
+        color: #666;
+        text-decoration: none;
+    }
+    footer nav a:hover {
+        text-decoration: underline;
+    }
+    .social-icons {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    .social-icons a {
+        width: 40px;
+        height: 40px;
+        background: #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: white;
+        font-size: 20px;
+    }
+    .copyright {
+        background: #001f3f;
+        color: white;
+        margin-top: 20px;
+        padding: 10px 0;
+        font-size: 12px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .header-top {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .menu-toggle {
+        display: block;
+    }
+    nav ul {
+        display: none;
+        flex-direction: column;
+        gap: 10px;
+        padding: 20px 0;
+        background: white;
+        position: absolute;
+        width: 100%;
+        top: 100%;
+        left: 0;
+    }
+    nav ul.active {
+        display: flex;
+    }
+    .search-box {
+        margin-top: 10px;
+        width: 100%;
+    }
+        .main-news {
+            flex-direction: column;
+            height: auto;
+        }
+
+        .latest-popular {
+            flex-direction: column;
+        }
+
+        .main-right {
+            grid-template-columns: 1fr;
+        }
+        }
+
+</style>
+</head>
+<body>
+<!-- Header -->
+<header>
+    <div class="container header-top">
+        <a href="homepage.html">
+        <img src="src/IMG/logo_metro.jpg" alt="Metro TV Logo" style="height: 60px;">
+        </a>
+        <div class="search-box">
+        <input type="text" placeholder="Search">
+        <button><img src="src/IMG/search-logo.png" alt="Search" style="height: 20px;"></button>
+        </div>
+        <div class="menu-toggle" id="menu-toggle">☰</div>
+    </div>
+    <nav>
+        <div class="container">
+        <ul id="nav-links">
+            <li><a href="#">Nasional</a></li>
+            <li><a href="#">Internasional</a></li>
+            <li><a href="#">Ekonomi</a></li>
+            <li><a href="#" class="highlight">Ramadan 2025</a></li>
+            <li><a href="#" class="highlight">Pilkada 2024</a></li>
+            <li><a href="program.html">Program</a></li>
+            <li><a href="headline.html">Headline News</a></li>
+            <li><a href="#"><span style="color: red;">•</span> Streaming</a></li>
+            <li><a href="#">Local News</a></li>
+        </ul>
+        </div>
+    </nav>
+</header>
+<main class="main-container">
+    <div class="container">
+        <!-- Berita Utama -->
+        <div class="main-news">
+        <div class="main-left">
+            <div class="overlay"></div>
+            <a href="#"><img src="src/IMG/almas.jpg" alt="Berita Utama" class="news-image"></a>
+            <div class="content">
+            <a href="https://www.metrotvnews.com/read/N9nC2nAe-jokowi-sampaikan-pesan-belasungkawa-dari-presiden-prabowo-untuk-paus-fransiskus"><h2>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur, hic.</h2></a>
+            <span>Nasional</span>
+            </div>
+        </div>
+        <div class="main-right">
+            <div class="small-news">
+            <div class="overlay"></div>
+            <a href="#"><img src="src/IMG/almas.jpg" alt="Berita" class="news-image"></a>
+            <div class="content">
+                <a href="#"><h3>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur, hic.</h3></a>
+                <span>Nasional</span>
+            </div>
+            </div>
+            <div class="small-news">
+            <div class="overlay"></div>
+            <a href="#"><img src="src/IMG/almas.jpg" alt="Berita" class="news-image"></a>
+            <div class="content">
+                <a href="#"><h3>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Aspernatur, hic.</h3></a>
+                <span>Nasional</span>
+            </div>
+            </div>
+            <div class="small-news">
+            <div class="overlay"></div>
+            <a href="#"><img src="src/IMG/almas.jpg" alt="Berita" class="news-image"></a>
+            <div class="content">
+                <a href="#"><h3>Almas Teva terpilih menjadi satgas pelecehan seksual Fasilkom</h3></a>
+                <span>Nasional</span>
+            </div>
+            </div>
+            <div class="small-news">
+            <div class="overlay"></div>
+            <a href="#"><img src="src/IMG/almas.jpg" alt="Berita" class="news-image"></a>
+            <div class="content">
+                <a href="#"><h3>Almas Teva terpilih menjadi satgas pelecehan seksual Fasilkom</h3></a>
+                <span>Nasional</span>
+            </div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Latest & Most Popular -->
+        <div class="latest-popular">
+        <div class="latest">
+            <h2>LATEST</h2>
+            <div class="underline"></div>
+            <div class="latest-list">
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            <div class="latest-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>Nasional • 3 hours ago</p>
+                </div>
+            </div>
+            </div>
+        </div>
+
+        <div class="popular">
+            <h2>MOST POPULAR</h2>
+            <div class="underline"></div>
+            <div class="popular-list">
+            <div class="popular-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>13 hours ago</p>
+                </div>
+                <span>1</span>
+            </div>
+            <div class="popular-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>13 hours ago</p>
+                </div>
+                <span>2</span>
+            </div>
+            <div class="popular-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>13 hours ago</p>
+                </div>
+                <span>3</span>
+            </div>
+            <div class="popular-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>13 hours ago</p>
+                </div>
+                <span>4</span>
+            </div>
+            <div class="popular-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Thumbnail"></a>
+                <div>
+                <a href="#"><h3>Lorem ipsum dolor sit amet.</h3></a>
+                <p>13 hours ago</p>
+                </div>
+                <span>5</span>
+            </div>
+            </div>
+        </div>
+        
+
+        </div>
+
+        <!-- Corporate News -->
+        <div class="corporate-news">
+        <h2>CORPORATE NEWS</h2>
+        <div class="underline"></div>
+        <div class="corporate-list">
+            <div class="corporate-item">
+            <a href="#"><img src="src/IMG/almas.jpg" alt="Berita 1"></a>
+            <h3><a href="#">Lorem ipsum dolor sit amet.</a></h3>
+            </div>
+            <div class="corporate-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Berita 1"></a>
+                <h3><a href="#">Lorem ipsum dolor sit amet.</a></h3>
+            </div>
+            <div class="corporate-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Berita 1"></a>
+                <h3><a href="#">Lorem ipsum dolor sit amet.</a></h3>
+            </div>
+            <div class="corporate-item">
+                <a href="#"><img src="src/IMG/almas.jpg" alt="Berita 1"></a>
+                <h3><a href="#">Lorem ipsum dolor sit amet.</a></h3>
+            </div>
+        </div>
+        </div>
+
+        <!-- Load More -->
+        <div class="load-more">
+        <div class="load-more-button">
+            <h3>LOAD MORE</h3>
+        </div>
+        </div>
+    </div>
+</main>
+<footer>
+    <img src="src/IMG/logo_metro.jpg" alt="Metro TV Logo" style="height: 50px; margin-bottom: 20px;">
+    <nav>
+    <a href="#">About</a> |
+    <a href="#">Terms And Condition</a> |
+    <a href="#">Contact Us</a> |
+    <a href="#">Privacy Policy</a> |
+    <a href="#">Cyber Media Guidelines</a> |
+    <a href="#">Career</a> |
+    <a href="#">Metro TV Mux</a>
+    </nav>
+
+    <div class="social-icons">
+    <a href="#">F</a>
+    <a href="#">𝕏</a>
+    <a href="#">▶</a>
+    <a href="#">📷</a>
+    <a href="#">in</a>
+    </div>
+
+    <img src="src/IMG/medcom.jpg" alt="Medcom Logo" style="height: 30px; margin-top: 20px;">
+    
+    <div class="copyright">
+    MetroTV © Copyright 2007 - 2025. All Rights Reserved
+    </div>
+</footer>
+<script>
+    // Burger menu toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+    
+    menuToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('active');
+    });
+    
+    // Scroll event untuk sticky navbar
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('nav');
+        if (window.scrollY > 100) {
+        navbar.style.position = 'fixed';
+        navbar.style.top = '0';
+        navbar.style.width = '100%';
+        navbar.style.backgroundColor = 'white';
+        navbar.style.boxShadow = '0 2px 5px rgba(0,0,0,0.2)';
+        } else {
+        navbar.style.position = 'relative';
+        navbar.style.boxShadow = 'none';
+        }
+    });
+</script>
+</body>
+</html>
